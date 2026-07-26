@@ -1404,7 +1404,7 @@ a:hover {
 }
 
 .faq-accordion .accordion-button::after {
-    content: "\F282";
+    content: "\f078";
     display: grid;
     flex: 0 0 24px;
     place-items: center;
@@ -1413,7 +1413,8 @@ a:hover {
     margin-left: auto;
     background: none;
     color: var(--indigo);
-    font-family: "bootstrap-icons";
+    font-family: "Font Awesome 7 Free";
+    font-weight: 900;
     font-size: 18px;
     line-height: 1;
     transform: rotate(0deg);

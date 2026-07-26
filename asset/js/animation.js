@@ -33,25 +33,25 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
         title: "The Technical Foundation",
         phase: "01",
         desc: "Degree in hand, I quickly realized that textbook theory only takes you so far. My true education began when I started applying technical logic to real-world problems. Understanding the underlying technology behind every interface gave me a unique perspective on what's visually striking — and technically doable.",
-        icon: 'bi-cpu'
+        icon: 'fa-solid fa-microchip'
       },
       {
         title: "Bridging Code and Creativity",
         phase: "02",
         desc: "I kicked off my career at the intersection of design and development. Driven by a passion to build things that actually matter, I combined front-end code with clean UI design. This dual perspective allowed me to build scalable, high-performance web interfaces that look great and function seamlessly.",
-        icon: 'bi-palette'
+        icon: 'fa-solid fa-palette'
       },
       {
         title: "Shaping Brand Identities",
         phase: "03",
         desc: "Design doesn't live in a vacuum. As a creative partner across print and digital implementations, I expanded into visual identity and brand strategy. I help brands tell a cohesive story — ensuring every digital touchpoint and physical collateral piece feels intentional and unified.",
-        icon: 'bi-star'
+        icon: 'fa-solid fa-star'
       },
       {
         title: "Solving Complex Problems",
         phase: "04",
         desc: "Today, my focus centers on solving complex product challenges through user-centered UX methodologies. By leveraging A/B testing, typography, color theory, and deep user research, I create data-backed digital experiences that don't just delight users — they actively drive engagement, conversion, and business growth.",
-        icon: 'bi-lightbulb'
+        icon: 'fa-solid fa-lightbulb'
       }
     ];
 
@@ -88,7 +88,7 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
         card.innerHTML = `
           ${cardSVG(idx)}
           <div class="card-content">
-            <div class="icon-box"><i class="bi ${p.icon}"></i></div>
+            <div class="icon-box"><i class="${p.icon}"></i></div>
             <div class="card-title">${p.title}</div>
             <div class="card-desc">${p.desc}</div>
             <div class="card-bottom">
