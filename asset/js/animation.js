@@ -1,4 +1,17 @@
-function countUp(el, target, suffix, duration) {
+document.querySelectorAll('[data-scroll-target]').forEach((button) => {
+      button.addEventListener('click', () => {
+        const target = document.querySelector(button.dataset.scrollTarget);
+        if (!target) return;
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({
+          behavior: reduceMotion ? 'auto' : 'smooth',
+          block: 'start'
+        });
+      });
+    });
+
+    function countUp(el, target, suffix, duration) {
       const start = performance.now();
       function tick(now) {
         const progress = Math.min((now - start) / duration, 1);
@@ -174,7 +187,7 @@ function countUp(el, target, suffix, duration) {
           <div class="rail-card-media" style="background:${p.grad}">
             <span class="rail-card-tag">${p.tag}</span>
             <span class="rail-card-index">0${i + 1}</span>
-            <div class="rail-card-stat">${p.stat}<span class="rail-card-label">${p.label}</span></div>
+            <div class="rail-card-stat"><div>${p.stat}</div><span class="rail-card-label">${p.label}</span></div>
             <div class="rail-card-bottom">
               <div class="rail-card-name">${p.name}</div>
               <p class="rail-card-desc">${p.desc}</p>
@@ -186,9 +199,9 @@ function countUp(el, target, suffix, duration) {
         rail.appendChild(card);
       });
 
-      // Drag to scroll
+      // Drag and wheel scroll. Pointer events cover mouse, touch, and pen input.
       const dragHint = document.querySelector('.drag-hint');
-      let isDown = false, startX, scrollLeft;
+      let isDown = false, startX, scrollLeft, activePointerId = null;
 
       railWrap.addEventListener('mouseenter', () => {
         dragHint?.classList.add('visible');
@@ -198,7 +211,7 @@ function countUp(el, target, suffix, duration) {
         dragHint?.classList.remove('visible');
       });
 
-      railWrap.addEventListener('mousemove', (e) => {
+      railWrap.addEventListener('pointermove', (e) => {
         if (!isDown && dragHint && e.target.closest('.rail') === rail) {
           const rect = railWrap.getBoundingClientRect();
           const x = e.clientX - rect.left;
@@ -208,35 +221,267 @@ function countUp(el, target, suffix, duration) {
         }
       });
 
-      rail.addEventListener('mousedown', (e) => {
+      railWrap.addEventListener('pointerdown', (e) => {
+        if (e.button !== undefined && e.button !== 0) return;
         isDown = true;
+        activePointerId = e.pointerId;
         railWrap.classList.add('dragging');
         dragHint?.classList.remove('visible');
-        startX = e.pageX;
-        scrollLeft = rail.scrollLeft;
+        startX = e.clientX;
+        scrollLeft = railWrap.scrollLeft;
+        railWrap.setPointerCapture?.(e.pointerId);
       });
 
-      document.addEventListener('mouseup', () => {
+      function stopDragging(e) {
+        if (activePointerId !== null && e?.pointerId !== activePointerId) return;
         isDown = false;
+        activePointerId = null;
         railWrap.classList.remove('dragging');
+      }
+
+      railWrap.addEventListener('pointerup', stopDragging);
+      railWrap.addEventListener('pointercancel', stopDragging);
+      railWrap.addEventListener('pointermove', (e) => {
+        if (!isDown) return;
+        const dx = e.clientX - startX;
+        railWrap.scrollLeft = scrollLeft - dx;
       });
 
-      document.addEventListener('mousemove', (e) => {
-        if (!isDown) return;
-        const dx = e.pageX - startX;
-        rail.scrollLeft = scrollLeft - dx;
-      });
+      railWrap.addEventListener('wheel', (e) => {
+        if (railWrap.scrollWidth <= railWrap.clientWidth) return;
+        const delta = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
+        if (!delta) return;
+        e.preventDefault();
+        railWrap.scrollLeft += delta;
+      }, { passive: false });
 
       // Counter + progress track
       const total = projectsData.length;
 
       function updateCounter() {
-        const cardWidth = rail.children[0]?.offsetWidth + 24 || 404;
-        const idx = Math.min(total - 1, Math.round(rail.scrollLeft / cardWidth));
+        const maxScroll = Math.max(railWrap.scrollWidth - railWrap.clientWidth, 0);
+        const progress = maxScroll ? railWrap.scrollLeft / maxScroll : 0;
+        const idx = Math.min(total - 1, Math.round(progress * (total - 1)));
         counter.textContent = String(idx + 1).padStart(2, '0') + ' / 0' + total;
-        trackFill.style.width = ((idx + 1) / total * 100) + '%';
+        trackFill.style.width = (progress * 100) + '%';
       }
 
-      rail.addEventListener('scroll', updateCounter, { passive: true });
+      railWrap.addEventListener('scroll', updateCounter, { passive: true });
       updateCounter();
+    }
+
+    // ===== Auto-opening Launch Process =====
+    const lanchBlock = document.querySelector('.lanch-block');
+
+    if (lanchBlock) {
+      const lanchItems = [...lanchBlock.querySelectorAll('.lanch-list')];
+      const lanchToggles = lanchItems.map((item) => item.querySelector('.lanch-toggle'));
+      let lanchScrollFrame = null;
+      let hoveredLanchToggle = null;
+
+      lanchItems.forEach((item, index) => {
+        const row = item.querySelector('.lanch-row');
+        const toggle = lanchToggles[index];
+
+        if (!row || !toggle) return;
+
+        row.addEventListener('mouseenter', () => {
+          hoveredLanchToggle = toggle;
+          toggle.checked = true;
+        });
+
+        row.addEventListener('mouseleave', () => {
+          hoveredLanchToggle = null;
+          requestLanchUpdate();
+        });
+        toggle.addEventListener('focus', () => {
+          toggle.checked = true;
+        });
+        toggle.addEventListener('blur', requestLanchUpdate);
+      });
+
+      function updateLanchTimeline() {
+        lanchScrollFrame = null;
+
+        if (hoveredLanchToggle) {
+          hoveredLanchToggle.checked = true;
+          return;
+        }
+
+        const viewportHeight = window.innerHeight;
+        const blockRect = lanchBlock.getBoundingClientRect();
+        const focusTop = viewportHeight * 0.22;
+        const focusBottom = viewportHeight * 0.78;
+
+        // Collapse the timeline when its block has left the active viewport area.
+        if (blockRect.bottom < focusTop || blockRect.top > focusBottom) {
+          lanchToggles.forEach((toggle) => {
+            if (toggle) toggle.checked = false;
+          });
+          return;
+        }
+
+        // Activate each row when it crosses a line near the bottom of the
+        // viewport. This lets every step run even when the whole block is
+        // shorter than the viewport or sits at the end of the page.
+        const activationLine = viewportHeight * 0.88;
+        let activeIndex = 0;
+
+        lanchItems.forEach((item, index) => {
+          if (item.getBoundingClientRect().top <= activationLine) {
+            activeIndex = index;
+          }
+        });
+
+        const activeToggle = lanchToggles[activeIndex];
+        if (activeToggle) activeToggle.checked = true;
+      }
+
+      function requestLanchUpdate() {
+        if (lanchScrollFrame !== null) return;
+        lanchScrollFrame = requestAnimationFrame(updateLanchTimeline);
+      }
+
+      window.addEventListener('scroll', requestLanchUpdate, { passive: true });
+      window.addEventListener('resize', requestLanchUpdate, { passive: true });
+      requestLanchUpdate();
+    }
+
+    // ===== GSAP Page Motion =====
+    if (window.gsap) {
+      const reducePageMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (!reducePageMotion) {
+        const pageEase = 'power3.out';
+
+        // Reveal the identity first, followed by the message, portrait, and contact details.
+        const heroMotion = gsap.timeline({
+          defaults: {
+            duration: 0.75,
+            ease: pageEase
+          }
+        });
+
+        heroMotion
+          .from('.hero-frame-header > *', {
+            autoAlpha: 0,
+            y: -20,
+            stagger: 0.1
+          })
+          .from('.hero-txt-block > *', {
+            autoAlpha: 0,
+            y: 30,
+            stagger: 0.1
+          }, '-=0.42')
+          .from('.hero-img-block', {
+            autoAlpha: 0,
+            x: 42,
+            scale: 0.96,
+            duration: 0.9
+          }, '-=0.72')
+          .from('.hero-frame-footer > *', {
+            autoAlpha: 0,
+            y: 16,
+            stagger: 0.08,
+            duration: 0.55
+          }, '-=0.42');
+
+        const revealSections = document.querySelectorAll(
+          'body > section:not(:first-of-type), .footer-block'
+        );
+
+        function revealSection(section) {
+          const headings = section.querySelectorAll(
+            '.block-title, .sec-text-main, .sec-text-muted'
+          );
+          const revealItems = section.querySelectorAll(
+            '.stat-card, .list-block, .rail-card, .lanch-list, ' +
+            '.capability-card, .core-service-card, .accordion-item'
+          );
+
+          if (headings.length) {
+            gsap.to(headings, {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.7,
+              stagger: 0.09,
+              ease: pageEase,
+              clearProps: 'transform'
+            });
+          }
+
+          if (revealItems.length) {
+            gsap.to(revealItems, {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.72,
+              stagger: 0.08,
+              ease: pageEase,
+              clearProps: 'transform'
+            });
+          }
+
+          const footerCta = section.querySelector('.footer-cta');
+          if (footerCta) {
+            gsap.to(footerCta, {
+              autoAlpha: 1,
+              y: 0,
+              scale: 1,
+              duration: 0.9,
+              ease: pageEase,
+              clearProps: 'transform'
+            });
+
+            gsap.to(section.querySelectorAll('.footer-details > *, .footer-bottom'), {
+              autoAlpha: 1,
+              y: 0,
+              duration: 0.7,
+              stagger: 0.1,
+              delay: 0.18,
+              ease: pageEase,
+              clearProps: 'transform'
+            });
+          }
+        }
+
+        revealSections.forEach((section) => {
+          const headings = section.querySelectorAll(
+            '.block-title, .sec-text-main, .sec-text-muted'
+          );
+          const revealItems = section.querySelectorAll(
+            '.stat-card, .list-block, .rail-card, .lanch-list, ' +
+            '.capability-card, .core-service-card, .accordion-item'
+          );
+
+          gsap.set(headings, { autoAlpha: 0, y: 24 });
+          gsap.set(revealItems, { autoAlpha: 0, y: 34, scale: 0.985 });
+
+          const footerCta = section.querySelector('.footer-cta');
+          if (footerCta) {
+            gsap.set(footerCta, { autoAlpha: 0, y: 42, scale: 0.985 });
+            gsap.set(section.querySelectorAll('.footer-details > *, .footer-bottom'), {
+              autoAlpha: 0,
+              y: 26
+            });
+          }
+        });
+
+        if ('IntersectionObserver' in window) {
+          const sectionMotionObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach((entry) => {
+              if (!entry.isIntersecting) return;
+              revealSection(entry.target);
+              observer.unobserve(entry.target);
+            });
+          }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -8% 0px'
+          });
+
+          revealSections.forEach((section) => sectionMotionObserver.observe(section));
+        } else {
+          revealSections.forEach(revealSection);
+        }
+      }
     }
