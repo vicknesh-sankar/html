@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Process block — exact sci-fi border</title>
+<style>
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: #000;
+    font-family: "Helvetica Neue", Arial, sans-serif;
+  }
+
+  :root {
+    --gold: rgb(255, 212, 0);
+    --dim: rgb(80, 80, 84);
+  }
+
+  .filler {
+    height: 60vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #3a3a3e;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .scroll-section {
+    position: relative;
+    height: 400vh;
+  }
+
+  .sticky-inner {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px 24px;
+  }
+
+  .wrap { width: 100%; max-width: 1300px; margin: 0 auto; }
+
+  .timeline {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 2px;
+    background: #232326;
+    margin-bottom: 56px;
+  }
+  .timeline-fill {
+    position: absolute; left: 0; top: 0; height: 2px; width: 0%;
+    background: var(--gold);
+    box-shadow: 0 0 8px rgba(255,212,0,0.6);
+  }
+  .timeline-dot {
+    position: absolute; top: 50%; transform: translate(-50%, -50%);
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #000; border: 1.5px solid #3a3a3e;
+    transition: border-color 0.3s ease;
+  }
+  .timeline-dot.filled { border-color: var(--gold); }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 18px;
+  }
+
+  .card {
+    position: relative;
+    min-height: 420px;
+  }
+
+  .card-svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+
+  .card-svg path.bg { fill: #0a0a0b; transition: fill 0.4s ease; }
+  .card.active .card-svg path.bg { fill: #0d0d0e; }
+
+  .card-svg path.crisp {
+    fill: none;
+    stroke: var(--dim);
+    stroke-width: 0.5;
+    transition: stroke 0.4s ease;
+  }
+  .card.active .card-svg path.crisp { stroke: var(--gold); }
+
+  .card-svg .glow-layer { opacity: 0; transition: opacity 0.5s ease; }
+  .card.active .card-svg .glow-layer { opacity: 1; }
+
+  .card-content {
+    position: absolute;
+    inset: 0;
+    padding: 22px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .icon-box {
+    width: 38px; height: 38px;
+    border: 1px solid #2a2a2e;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--dim);
+    transition: border-color 0.4s ease, color 0.4s ease;
+  }
+  .card.active .icon-box { border-color: rgba(255,212,0,0.5); color: var(--gold); }
+  .icon-box svg { width: 16px; height: 16px; }
+
+  .card-title {
+    font-size: 14px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase;
+    color: var(--dim); margin: 14px 0 10px;
+    transition: color 0.4s ease;
+  }
+  .card.active .card-title { color: var(--gold); }
+
+  .card-desc {
+    font-size: 12px; line-height: 1.55; color: #55555a;
+    margin: 0; flex: 1;
+    transition: color 0.4s ease;
+  }
+  .card.active .card-desc { color: #b0b0b6; }
+
+  .card-bottom { display: flex; flex-direction: column; gap: 10px; }
+  .card-divider { width: 16px; height: 1px; background: #2a2a2e; }
+  .card-phase {
+    font-family: "Courier New", monospace; font-size: 11px; letter-spacing: 1.5px;
+    color: var(--dim); transition: color 0.4s ease;
+  }
+  .card-phase::before { content: "STEP "; }
+  .card.active .card-phase { color: var(--gold); }
+
+  @media (max-width: 1000px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 560px) {
+    .cards { grid-template-columns: 1fr; }
+    .card { min-height: 300px; }
+  }
+</style>
+</head>
+<body>
+  <div class="filler">Scroll down to begin</div>
+
+  <div class="scroll-section" id="scrollSection">
+    <div class="sticky-inner">
+      <div class="wrap">
+       
+        <div class="timeline">
+          <div class="timeline-fill" id="timelineFill"></div>
+          <div class="timeline-dot filled" style="left:0%"></div>
+          <div class="timeline-dot" style="left:33.33%"></div>
+          <div class="timeline-dot" style="left:66.66%"></div>
+          <div class="timeline-dot" style="left:100%"></div>
+        </div>
+
+        <div class="cards" id="cards"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="filler">End of section</div>
+
+<script>
+  const PANEL_D = "M 12.25 0.25 L 277.75 0.25 L 289.75 12.25 L 289.75 75.5 L 281.75 83.5 L 281.75 227.5 L 289.75 235.5 L 289.75 298.75 L 277.75 310.75 L 12.25 310.75 L 0.25 298.75 L 0.25 12.25 L 12.25 0.25";
+
+  const phases = [
+    { title: "The Technical Foundation", phase: "01", desc: "Degree in hand, I quickly realized that textbook theory only takes you so far. My true education began when I started applying technical logic to real-world problems. Understanding the underlying technology behind every interface gave me a unique perspective on what's visually striking \u2014 and technically doable.",
+      icon: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>' },
+    { title: "Bridging Code and Creativity", phase: "02", desc: "I kicked off my career at the intersection of design and development. Driven by a passion to build things that actually matter, I combined front-end code with clean UI design. This dual perspective allowed me to build scalable, high-performance web interfaces that look great and function seamlessly.",
+      icon: '<path d="M4 20l3.5-1 11-11a1.5 1.5 0 0 0-2-2L5.5 17 4 20Z"/>' },
+    { title: "Shaping Brand Identities", phase: "03", desc: "Design doesn't live in a vacuum. As a creative partner across print and digital implementations, I expanded into visual identity and brand strategy. I help brands tell a cohesive story \u2014 ensuring every digital touchpoint and physical collateral piece feels intentional and unified.",
+      icon: '<path d="M8 6L2 12l6 6M16 6l6 6-6 6"/>' },
+    { title: "Solving Complex Problems", phase: "04", desc: "Today, my focus centers on solving complex product challenges through user-centered UX methodologies. By leveraging A/B testing, typography, color theory, and deep user research, I create data-backed digital experiences that don't just delight users \u2014 they actively drive engagement, conversion, and business growth.",
+      icon: '<path d="M4 6h10M17 6h3M4 12h4M11 12h9M4 18h13"/><circle cx="14" cy="6" r="2"/><circle cx="7" cy="12" r="2"/><circle cx="17" cy="18" r="2"/>' }
+  ];
+
+  function cardSVG(idx) {
+    const g = 'g' + idx; // unique filter id suffix
+    return `
+      <svg class="card-svg" viewBox="0 0 290 311" preserveAspectRatio="none">
+        <defs>
+          <filter id="soft-${g}" x="-120%" y="-120%" width="340%" height="340%" color-interpolation-filters="sRGB">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="a"/>
+            <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/>
+            <feMerge><feMergeNode in="a"/><feMergeNode in="b"/></feMerge>
+          </filter>
+          <filter id="crisp-${g}" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur stdDeviation="8" result="blur"/>
+            <feMerge><feMergeNode in="blur"/></feMerge>
+          </filter>
+        </defs>
+        <path class="bg" d="${PANEL_D}"></path>
+        <g class="glow-layer">
+          <path d="${PANEL_D}" fill="none" stroke="var(--gold)" stroke-width="8.5" opacity="0.35" filter="url(#soft-${g})"></path>
+          <path d="${PANEL_D}" fill="none" stroke="var(--gold)" stroke-width="24.5" opacity="0.25" filter="url(#crisp-${g})"></path>
+        </g>
+        <path class="crisp" d="${PANEL_D}"></path>
+      </svg>`;
+  }
+
+  const container = document.getElementById('cards');
+  phases.forEach((p, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card' + (idx === 0 ? ' active' : '');
+    card.dataset.index = idx;
+    card.innerHTML = `
+      ${cardSVG(idx)}
+      <div class="card-content">
+        <div class="icon-box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${p.icon}</svg></div>
+        <div class="card-title">${p.title}</div>
+        <div class="card-desc">${p.desc}</div>
+        <div class="card-bottom">
+          <div class="card-divider"></div>
+          <div class="card-phase">${p.phase}</div>
+        </div>
+      </div>`;
+    container.appendChild(card);
+  });
+
+  const cards = document.querySelectorAll('.card');
+  const fill = document.getElementById('timelineFill');
+  const dots = document.querySelectorAll('.timeline-dot');
+  const section = document.getElementById('scrollSection');
+
+  function updateProgress() {
+    const rect = section.getBoundingClientRect();
+    const total = section.offsetHeight - window.innerHeight;
+    let progress = -rect.top / total;
+    progress = Math.max(0, Math.min(1, progress));
+
+    fill.style.width = (progress * 100) + '%';
+
+    const activeIdx = Math.min(3, Math.floor(progress * 4));
+    cards.forEach((c, i) => c.classList.toggle('active', i === activeIdx));
+    dots.forEach((d, i) => d.classList.toggle('filled', progress >= i / 3 - 0.001));
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true });
+  window.addEventListener('resize', updateProgress);
+  updateProgress();
+</script>
+</body>
+</html>

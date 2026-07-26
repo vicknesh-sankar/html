@@ -1,0 +1,353 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rubik:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Stick&display=swap');
+body {
+    color: #232530;
+    background: #fff;
+    font-family: 'Rubik', sans-serif;
+}
+.head-font {
+    font-family: 'Bebas Neue', cursive;
+}
+.head-font-second {
+    font-family: 'Stick', sans-serif;
+}
+.overflow-x-hidden {
+    overflow-x: hidden;
+}
+.m-head {
+    color: #7e64ff;
+    background: #7e64ff;
+    background: -webkit-linear-gradient(83deg, rgba(74, 155, 255, 1) 0%, rgba(126, 100, 255, 1) 50%, rgba(254, 119, 149, 1) 100%);
+    background: linear-gradient(83deg, rgba(74, 155, 255, 1) 0%, rgba(126, 100, 255, 1) 50%, rgba(254, 119, 149, 1) 100%);
+    color: transparent;
+    background-clip: text;
+    -webkit-background-clip: text;
+    text-fill-color: transparent;
+    -webkit-text-fill-color: transparent;
+}
+.primary-font-l {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 300;
+}
+.primary-font-r {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 400;
+}
+.primary-font-m {
+    font-family: 'Rubik', sans-serif;
+    font-weight: 500;
+}
+.bg-gra {
+    background: rgb(74, 155, 255);
+    background: -moz-linear-gradient(83deg, rgba(74, 155, 255, 1) 0%, rgba(126, 100, 255, 1) 50%, rgba(254, 119, 149, 1) 100%);
+    background: -webkit-linear-gradient(83deg, rgba(74, 155, 255, 1) 0%, rgba(126, 100, 255, 1) 50%, rgba(254, 119, 149, 1) 100%);
+    background: linear-gradient(83deg, rgba(74, 155, 255, 1) 0%, rgba(126, 100, 255, 1) 50%, rgba(254, 119, 149, 1) 100%);
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#4a9bff", endColorstr="#fe7795", GradientType=1);
+}
+.t-w {
+    color: #fff;
+}
+.t-b {
+    color: #232530;
+}
+.workboxcol {
+    height: 420px;
+}
+.title-head {
+    position: absolute;
+    font-family: 'Bebas Neue', cursive;
+    left: 10px;
+    font-size: 1.4rem;
+    letter-spacing: 0.1rem;
+    line-height: 1.26316;
+    font-weight: 500;
+    bottom: 35px;
+    -webkit-transform: translateZ(50px) scale(0.95);
+    transform: translateZ(50px) scale(0.95);
+    text-shadow: 1px 5px 7px #00000052;
+    transition: all .3s;
+    -ms-transition: all .3s;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -o-transition: all .3s;
+}
+.t-w .title-head:after {
+    background: #fff;
+}
+.t-b .title-head:after {
+    background: #232530;
+}
+.title-head:after {
+    position: absolute;
+    content: "";
+    width: 100px;
+    height: 3px;
+    border-radius: 2px;
+    bottom: -6px;
+    left: 0;
+}
+.title-sub-head {
+    position: absolute;
+    font-family: 'Rubik', sans-serif;
+    left: 15px;
+    font-size: 0.75rem;
+    line-height: 1.26316;
+    font-weight: 400;
+    bottom: 10px;
+    text-shadow: 1px 5px 7px #00000052;
+    transition: all .3s;
+    -ms-transition: all .3s;
+    -webkit-transition: all .3s;
+    -moz-transition: all .3s;
+    -o-transition: all .3s;
+}
+.gallery-view {
+    width: 370px;
+    height: 230px;
+    position: relative;
+    background: rgb(32, 69, 112);
+    box-shadow: 0 20px 27px rgba(0, 0, 0, 0.2);
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, .125);
+}
+.gallery-view:hover .title-head {
+    -webkit-transform: translateZ(50px) scale(1);
+    transform: translateZ(50px) scale(1);
+    left: 20px;
+    bottom: 45px;
+    text-shadow: 1px 8px 10px #00000052;
+}
+.gallery-view:hover .title-sub-head {
+    -webkit-transform: translateZ(50px) scale(1);
+    transform: translateZ(50px) scale(1);
+    left: 30px;
+    bottom: 20px;
+    text-shadow: 1px 8px 10px #00000052;
+}
+.circle {
+    font-weight: bold;
+    padding: 15px 20px;
+    border-radius: 50%;
+    background: #ddd;
+    color: #202020;
+    max-height: 50px;
+    max-width: 50px;
+    z-index: 2;
+    font-size: 1.2em;
+    line-height: 18px;
+    position: relative;
+}
+.how-it-works.row {
+    display: flex;
+}
+.how-it-works.row .col-2 {
+    display: inline-flex;
+    align-self: stretch;
+    align-items: center;
+    justify-content: center;
+}
+.how-it-works.row .col-2::after {
+    content: "";
+    position: absolute;
+    border-left: 3px solid #ddd;
+    z-index: 1;
+}
+.how-it-works.row .col-2.bottom::after {
+    height: 50%;
+    left: 50%;
+    top: 50%;
+}
+.how-it-works.row .col-2.full::after {
+    height: 100%;
+    left: calc(50% - 0px);
+}
+.how-it-works.row .col-2.full.adj::after {
+    height: 100%;
+    left: calc(50% - 3px);
+}
+.how-it-works.row .col-2.top.adj::after {
+    left: calc(50% - 3px);
+}
+.how-it-works.row .col-2.top::after {
+    height: 50%;
+    left: 50%;
+    top: 0;
+}
+.proflie-img {
+    width: 30vh;
+    height: 30vh;
+}
+.timeline div {
+    padding: 0;
+    height: 40px;
+}
+.timeline hr {
+    border-top: 3px solid #ddd;
+    margin: 0;
+    top: 17px;
+    position: relative;
+}
+.timeline .col-2 {
+    display: flex;
+    overflow: hidden;
+}
+.timeline .corner {
+    border: 3px solid #ddd;
+    width: 100%;
+    position: relative;
+    border-radius: 15px;
+}
+.timeline .top-right {
+    left: 50%;
+    top: -50%;
+}
+.timeline .left-bottom {
+    left: -50%;
+    top: calc(50% - 3px);
+}
+.timeline .top-left {
+    left: -50%;
+    top: -50%;
+}
+.timeline .right-bottom {
+    left: 50%;
+    top: calc(50% - 3px);
+}
+#projector {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: calc(100% - -30px);
+    height: 100vh;
+}
+#mouse-scroll span {
+    display: block;
+    width: 5px;
+    height: 5px;
+    -ms-transform: rotate(45deg);
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    transform: rotate(45deg);
+    border-right: 2px solid #7e64ff;
+    border-bottom: 2px solid #7e64ff;
+    margin: 0 0 3px 5px;
+}
+#mouse-scroll .mouse {
+    height: 21px;
+    width: 14px;
+    border-radius: 10px;
+    -webkit-transform: none;
+    -ms-transform: none;
+    transform: none;
+    border: 2px solid #7e64ff;
+    top: 170px;
+}
+#mouse-scroll .down-arrow-1 {
+    margin-top: 6px;
+}
+#mouse-scroll .down-arrow-1,
+#mouse-scroll .down-arrow-2,
+#mouse-scroll .down-arrow-3 {
+    -webkit-animation: mouse-scroll 1s infinite;
+    -moz-animation: mouse-scroll 1s infinite:
+}
+#mouse-croll .down-arrow-1 {
+    -webkit-animation-delay: .1s;
+    -moz-animation-delay: .1s;
+    -webkit-animation-direction: alternate;
+}
+#mouse-scroll .down-arrow-2 {
+    -webkit-animation-delay: .2s;
+    -moz-animation-delay: .2s;
+    -webkit-animation-direction: alternate;
+}
+#mouse-scroll .down-arrow-3 {
+    -webkit-animation-delay: .3s;
+    -moz-animation-dekay: .3s;
+    -webkit-animation-direction: alternate;
+}
+#mouse-scroll .mouse-in {
+    height: 5px;
+    width: 2px;
+    display: block;
+    margin: 5px auto;
+    background: #7e64ff;
+    position: relative;
+}
+#mouse-scroll .mouse-in {
+    -webkit-animation: animated-mouse 1.2s ease infinite;
+    moz-animation: mouse-animated 1.2s ease infinite;
+}
+@-webkit-keyframes animated-mouse {
+    0% {
+        opacity: 1;
+        -webkit-transform: translateY(0);
+        -ms-transform: translateY(0);
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        -webkit-transform: translateY(6px);
+        -ms-transform: translateY(6px);
+        transform: translateY(6px);
+    }
+}
+@-webkit-keyframes mouse-scroll {
+    0% {
+        opacity: 1;
+    }
+    50% {
+        opacity: .5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+@keyframes mouse-scroll {
+    0% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+.op-0 {
+    opacity: 0;
+}
+.op-1 {
+    opacity: 1;
+}
+.soc a i {
+    font-size: 2.2em;
+    padding: .3em;
+}
+.projects-row {
+    position: relative;
+    z-index: 2;
+}
+.sec-box {
+    height: 100vh;
+}
+a {
+    color: #7e64ff;
+}
+a:hover {
+    color: #fe7795;
+}
+.pro-bg {
+    background: url(../img/bg-main.svg);
+    background-size: 100% auto;
+}
+@media only screen and (min-width: 1200px) and (max-width: 1366px) {
+    .sec-box {
+        height: 110vh;
+    }
+    .timeline-sec{
+        height: 135vh;
+    }
+}

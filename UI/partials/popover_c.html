@@ -1,0 +1,98 @@
+﻿<div id="data-popover">
+    <div class="display-title">
+
+        popovers
+
+    </div>
+
+    <div class="code">
+        <figure class="highlight">
+            <pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- Note: A custom script is used to activate popovers:
+$(function(){
+  $('[data-toggle="popover"]').popover()
+});
+--&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-secondary"</span> <span class="na">data-container=</span><span class="s">"body"</span>
+            <span class="na">data-toggle=</span><span class="s">"popover"</span> <span class="na">data-placement=</span><span class="s">"top"</span>
+            <span class="na">data-content=</span><span class="s">"Vivamus sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</span>
+  Popover on top
+<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-secondary"</span> <span class="na">data-container=</span><span class="s">"body"</span>
+            <span class="na">data-toggle=</span><span class="s">"popover"</span> <span class="na">data-placement=</span><span class="s">"right"</span>
+            <span class="na">data-content=</span><span class="s">"Vivamus sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</span>
+  Popover on right
+<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-secondary"</span> <span class="na">data-container=</span><span class="s">"body"</span>
+            <span class="na">data-toggle=</span><span class="s">"popover"</span> <span class="na">data-placement=</span><span class="s">"bottom"</span>
+            <span class="na">data-content=</span><span class="s">"Vivamus sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</span>
+  Popover on bottom
+<span class="nt">&lt;/button&gt;</span>
+<span class="nt">&lt;button</span> <span class="na">type=</span><span class="s">"button"</span> <span class="na">class=</span><span class="s">"btn btn-secondary"</span> <span class="na">data-container=</span><span class="s">"body"</span>
+            <span class="na">data-toggle=</span><span class="s">"popover"</span> <span class="na">data-placement=</span><span class="s">"left"</span>
+            <span class="na">data-content=</span><span class="s">"Vivamus sagittis lacus vel augue laoreet rutrum faucibus."</span><span class="nt">&gt;</span>
+  Popover on left
+<span class="nt">&lt;/button&gt;</span></code></pre>
+        </figure>
+    </div>
+    <div class="rendered">
+        <!-- Note: A custom script is used to activate popovers:
+
+        $(function(){
+          $('[data-toggle="popover"]').popover()
+        });
+        -->
+        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="top" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+            Popover on top
+        </button>
+
+        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="right" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+            Popover on right
+        </button>
+
+        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="bottom" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+            Popover on bottom
+        </button>
+
+        <button type="button" class="btn btn-secondary" data-container="body" data-toggle="popover" data-placement="left" data-content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+            Popover on left
+        </button>
+    </div>
+
+</div>
+
+<div id="data-dismissible__popover">
+    <div class="display-title">
+
+        dismissible popover
+
+    </div>
+
+    <div class="clipboard">data-trigger</div>
+
+    <div class="code">
+        <figure class="highlight">
+            <pre><code class="language-html" data-lang="html"><span class="c">&lt;!-- Note: A custom script is used to activate popovers:
+$(function(){
+  $('[data-toggle="popover"]').popover()
+});
+--&gt;</span>
+<span class="nt">&lt;a</span> <span class="na">tabindex=</span><span class="s">"0"</span> <span class="na">class=</span><span class="s">"btn btn-lg btn-danger"</span> <span class="na">role=</span><span class="s">"button"</span>
+            <span class="na">data-toggle=</span><span class="s">"popover"</span> <span class="na">data-trigger=</span><span class="s">"focus"</span> <span class="na">title=</span><span class="s">"Dismissible popover"</span>
+            <span class="na">data-content=</span><span class="s">"Click anywhere to dismiss this popover"</span><span class="nt">&gt;</span>
+   Dismissible popover
+<span class="nt">&lt;/a&gt;</span></code></pre>
+        </figure>
+    </div>
+    <div class="rendered">
+        <!-- Note: A custom script is used to activate popovers:
+
+        $(function(){
+          $('[data-toggle="popover"]').popover()
+        });
+        -->
+        <a tabindex="0" class="btn btn-lg btn-danger" role="button" data-toggle="popover" data-trigger="focus" title="Dismissible popover" data-content="Click anywhere to dismiss this popover">
+            Dismissible popover
+        </a>
+    </div>
+
+</div>
