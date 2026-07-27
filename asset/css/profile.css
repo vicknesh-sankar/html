@@ -508,6 +508,10 @@ a:hover {
 
 }
 
+.stat-number.iconpack-infi-bold {
+    font-size: 4.5rem;
+}
+
 @keyframes gradient-shift {
     0% {
         background-position: 0% 50%;
@@ -1475,8 +1479,8 @@ a:hover {
     --bs-accordion-btn-focus-box-shadow: none;
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    margin-top: clamp(32px, 5vw, 64px);
+    gap: 14px;
+    margin-top: clamp(20px, 3vw, 36px);
 }
 
 .faq-accordion .accordion-item {
@@ -1496,14 +1500,14 @@ a:hover {
 }
 
 .faq-accordion .accordion-button {
-    gap: 24px;
-    padding: clamp(24px, 3vw, 38px);
+    gap: 18px;
+    padding: clamp(18px, 2vw, 24px);
     border: 0;
     box-shadow: none;
     color: var(--text);
     background: transparent;
     font-family: var(--font-display);
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 700;
     line-height: 1.35;
 }
@@ -1542,15 +1546,15 @@ a:hover {
 }
 
 .faq-accordion .accordion-body {
-    max-width: 1200px;
+    max-width: 1000px;
     padding:
         0
-        clamp(24px, 3vw, 38px)
-        clamp(24px, 3vw, 38px);
+        clamp(18px, 2vw, 24px)
+        clamp(18px, 2vw, 24px);
     color: var(--text-muted);
     font-family: var(--font-mono);
-    font-size: clamp(13px, 1.2vw, 17px);
-    line-height: 1.7;
+    font-size: clamp(13px, 1vw, 15px);
+    line-height: 1.6;
 }
 
 /* ===== Footer ===== */
@@ -1989,6 +1993,10 @@ a:hover {
         font-size: 2.75rem;
     }
 
+    .stat-number.iconpack-infi-bold {
+        font-size: 3.5rem;
+    }
+
     .sticky-inner {
         gap: 16px;
     }
@@ -2083,17 +2091,17 @@ a:hover {
     }
 
     .faq-accordion {
-        gap: 16px;
-        margin-top: 32px;
+        gap: 10px;
+        margin-top: 20px;
     }
 
     .faq-accordion .accordion-button {
-        gap: 14px;
-        padding: 22px 18px;
+        gap: 12px;
+        padding: 16px;
     }
 
     .faq-accordion .accordion-body {
-        padding: 0 18px 22px;
+        padding: 0 16px 16px;
     }
 
     .footer-block .view-frame {
