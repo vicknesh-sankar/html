@@ -1,4 +1,4 @@
-document.querySelectorAll('[data-scroll-target]').forEach((button) => {
+    document.querySelectorAll('[data-scroll-target]').forEach((button) => {
       button.addEventListener('click', () => {
         const target = document.querySelector(button.dataset.scrollTarget);
         if (!target) return;
@@ -11,7 +11,136 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
       });
     });
 
+    // ===== Status Badge Parallax =====
+    const statusBadge = document.querySelector('.ai-btn');
+    const statusParallaxArea = statusBadge?.closest('.hero');
+    const allowStatusParallax = window.matchMedia(
+      '(pointer: fine) and (prefers-reduced-motion: no-preference)'
+    );
+
+    if (statusBadge && statusParallaxArea && allowStatusParallax.matches) {
+      let statusFrame = null;
+      let pointerX = 0;
+      let pointerY = 0;
+
+      function renderStatusParallax() {
+        const rect = statusParallaxArea.getBoundingClientRect();
+        const normalizedX = ((pointerX - rect.left) / rect.width - 0.5) * 2;
+        const normalizedY = ((pointerY - rect.top) / rect.height - 0.5) * 2;
+        const x = Math.max(-1, Math.min(1, normalizedX));
+        const y = Math.max(-1, Math.min(1, normalizedY));
+
+        statusBadge.style.setProperty('--status-x', `${(x * 10).toFixed(2)}px`);
+        statusBadge.style.setProperty('--status-y', `${(y * 7).toFixed(2)}px`);
+        statusBadge.style.setProperty('--status-rotate-x', `${(-y * 4).toFixed(2)}deg`);
+        statusBadge.style.setProperty('--status-rotate-y', `${(x * 6).toFixed(2)}deg`);
+        statusBadge.style.setProperty('--status-icon-x', `${(x * 4).toFixed(2)}px`);
+        statusBadge.style.setProperty('--status-icon-y', `${(y * 3).toFixed(2)}px`);
+        statusFrame = null;
+      }
+
+      statusParallaxArea.addEventListener('pointermove', (event) => {
+        pointerX = event.clientX;
+        pointerY = event.clientY;
+        if (statusFrame === null) {
+          statusFrame = requestAnimationFrame(renderStatusParallax);
+        }
+      }, { passive: true });
+
+      statusParallaxArea.addEventListener('pointerleave', () => {
+        if (statusFrame !== null) {
+          cancelAnimationFrame(statusFrame);
+          statusFrame = null;
+        }
+
+        [
+          '--status-x',
+          '--status-y',
+          '--status-rotate-x',
+          '--status-rotate-y',
+          '--status-icon-x',
+          '--status-icon-y'
+        ].forEach((property) => statusBadge.style.removeProperty(property));
+      });
+    }
+
+    // ===== Page-wide Scroll Parallax =====
+    const allowPageParallax = window.matchMedia(
+      '(prefers-reduced-motion: no-preference)'
+    );
+
+    if (allowPageParallax.matches) {
+      const pageParallaxLayers = [];
+      let pageParallaxFrame = null;
+
+      function registerPageParallax(selector, speed, xSpeed = 0) {
+        document.querySelectorAll(selector).forEach((element, index) => {
+          if (element.hasAttribute('data-page-parallax')) return;
+
+          const direction = index % 2 === 0 ? 1 : -1;
+          element.setAttribute('data-page-parallax', '');
+          element.dataset.parallaxSpeed = String(speed);
+          element.dataset.parallaxXSpeed = String(xSpeed * direction);
+          pageParallaxLayers.push(element);
+        });
+      }
+
+      registerPageParallax('.hero-txt-block', 0.035, -0.006);
+      registerPageParallax('.hero-img-block', 0.065, 0.012);
+      registerPageParallax('#experience .view-frame > .hero-frame-body', 0.03, 0.004);
+      registerPageParallax('.scroll-section .wrap', 0.035, -0.004);
+      registerPageParallax('.list-block', 0.022, 0.005);
+      registerPageParallax('#featured-work .rail', 0.03, 0.004);
+      registerPageParallax('.lanch-block', 0.028, -0.004);
+      registerPageParallax('.capabilities-grid', 0.032, 0.004);
+      registerPageParallax('.core-service-card', 0.022, 0.005);
+      registerPageParallax('.faq-accordion', 0.03, -0.004);
+      registerPageParallax('.footer-cta', 0.045, 0.006);
+      registerPageParallax('.footer-details', 0.025, -0.004);
+      registerPageParallax(
+        '.block-title, .sec-text-main, .sec-text-muted, .sec-sub-main',
+        0.018,
+        0.003
+      );
+
+      function renderPageParallax() {
+        const viewportHeight = window.innerHeight;
+        const viewportCenter = viewportHeight / 2;
+        const compactViewport = window.innerWidth <= 720;
+        const maxY = compactViewport ? 14 : 40;
+        const maxX = compactViewport ? 6 : 16;
+
+        pageParallaxLayers.forEach((element) => {
+          const rect = element.getBoundingClientRect();
+          const elementCenter = rect.top + rect.height / 2;
+          const distance = viewportCenter - elementCenter;
+          const speed = Number(element.dataset.parallaxSpeed);
+          const xSpeed = Number(element.dataset.parallaxXSpeed);
+          const y = Math.max(-maxY, Math.min(maxY, distance * speed));
+          const x = Math.max(-maxX, Math.min(maxX, distance * xSpeed));
+
+          element.style.setProperty('--page-parallax-x', `${x.toFixed(2)}px`);
+          element.style.setProperty('--page-parallax-y', `${y.toFixed(2)}px`);
+        });
+
+        pageParallaxFrame = null;
+      }
+
+      function requestPageParallax() {
+        if (pageParallaxFrame === null) {
+          pageParallaxFrame = requestAnimationFrame(renderPageParallax);
+        }
+      }
+
+      window.addEventListener('scroll', requestPageParallax, { passive: true });
+      window.addEventListener('resize', requestPageParallax, { passive: true });
+      window.addEventListener('load', requestPageParallax, { once: true });
+      requestPageParallax();
+    }
+
     function countUp(el, target, suffix, duration) {
+      if (!el) return;
+
       const start = performance.now();
       function tick(now) {
         const progress = Math.min((now - start) / duration, 1);
@@ -21,88 +150,127 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
       }
       requestAnimationFrame(tick);
     }
-    countUp(document.getElementById('stat1'), 9, '+', 1000);
-    countUp(document.getElementById('stat2'), 50, '+', 1400);
-    countUp(document.getElementById('stat3'), 100, '%', 1600);
 
-    // ===== Scroll Section Timeline =====
-    const PANEL_D = "M 12.25 0.25 L 277.75 0.25 L 289.75 12.25 L 289.75 75.5 L 281.75 83.5 L 281.75 227.5 L 289.75 235.5 L 289.75 298.75 L 277.75 310.75 L 12.25 310.75 L 0.25 298.75 L 0.25 12.25 L 12.25 0.25";
-
-    const phases = [
-      {
-        title: "The Technical Foundation",
-        phase: "01",
-        desc: "Degree in hand, I quickly realized that textbook theory only takes you so far. My true education began when I started applying technical logic to real-world problems. Understanding the underlying technology behind every interface gave me a unique perspective on what's visually striking — and technically doable.",
-        icon: 'fa-solid fa-microchip'
-      },
-      {
-        title: "Bridging Code and Creativity",
-        phase: "02",
-        desc: "I kicked off my career at the intersection of design and development. Driven by a passion to build things that actually matter, I combined front-end code with clean UI design. This dual perspective allowed me to build scalable, high-performance web interfaces that look great and function seamlessly.",
-        icon: 'fa-solid fa-palette'
-      },
-      {
-        title: "Shaping Brand Identities",
-        phase: "03",
-        desc: "Design doesn't live in a vacuum. As a creative partner across print and digital implementations, I expanded into visual identity and brand strategy. I help brands tell a cohesive story — ensuring every digital touchpoint and physical collateral piece feels intentional and unified.",
-        icon: 'fa-solid fa-star'
-      },
-      {
-        title: "Solving Complex Problems",
-        phase: "04",
-        desc: "Today, my focus centers on solving complex product challenges through user-centered UX methodologies. By leveraging A/B testing, typography, color theory, and deep user research, I create data-backed digital experiences that don't just delight users — they actively drive engagement, conversion, and business growth.",
-        icon: 'fa-solid fa-lightbulb'
-      }
+    const statCounters = [
+      { element: document.getElementById('stat1'), target: 9, suffix: '+', duration: 1000 },
+      { element: document.getElementById('stat2'), target: 50, suffix: '+', duration: 1400 },
+      { element: document.getElementById('stat3'), target: 100, suffix: '%', duration: 1600 }
     ];
+    const statsRow = document.querySelector('.stats-row');
+    const reduceStatMotion = window.matchMedia(
+      '(prefers-reduced-motion: reduce)'
+    ).matches;
+    let statsHaveAnimated = false;
 
-    function cardSVG(idx) {
-      const g = 'g' + idx;
-      return `
-        <svg class="card-svg" viewBox="0 0 290 311" preserveAspectRatio="none">
-          <defs>
-            <filter id="soft-${g}" x="-120%" y="-120%" width="340%" height="340%" color-interpolation-filters="sRGB">
-              <feGaussianBlur in="SourceGraphic" stdDeviation="10" result="a"/>
-              <feGaussianBlur in="SourceGraphic" stdDeviation="3.5" result="b"/>
-              <feMerge><feMergeNode in="a"/><feMergeNode in="b"/></feMerge>
-            </filter>
-            <filter id="crisp-${g}" x="-60%" y="-60%" width="220%" height="220%">
-              <feGaussianBlur stdDeviation="8" result="blur"/>
-              <feMerge><feMergeNode in="blur"/></feMerge>
-            </filter>
-          </defs>
-          <path class="bg" d="${PANEL_D}"></path>
-          <g class="glow-layer">
-            <path d="${PANEL_D}" fill="none" stroke="var(--indigo)" stroke-width="8.5" opacity="0.35" filter="url(#soft-${g})"></path>
-            <path d="${PANEL_D}" fill="none" stroke="var(--pink)" stroke-width="24.5" opacity="0.25" filter="url(#crisp-${g})"></path>
-          </g>
-          <path class="crisp" d="${PANEL_D}"></path>
-        </svg>`;
+    function startStatCounters() {
+      if (statsHaveAnimated) return;
+      statsHaveAnimated = true;
+
+      statCounters.forEach(({ element, target, suffix, duration }) => {
+        if (!element) return;
+
+        if (reduceStatMotion) {
+          element.textContent = `${target}${suffix}`;
+        } else {
+          countUp(element, target, suffix, duration);
+        }
+      });
     }
 
-    const container = document.getElementById('cards');
-    if (container) {
-      phases.forEach((p, idx) => {
-        const card = document.createElement('div');
-        card.className = 'card' + (idx === 0 ? ' active' : '');
-        card.dataset.index = idx;
-        card.innerHTML = `
-          ${cardSVG(idx)}
-          <div class="card-content">
-            <div class="icon-box"><i class="${p.icon}"></i></div>
-            <div class="card-title">${p.title}</div>
-            <div class="card-desc">${p.desc}</div>
-            <div class="card-bottom">
-              <div class="card-divider"></div>
-              <div class="card-phase">${p.phase}</div>
-            </div>
-          </div>`;
-        container.appendChild(card);
+    if (statsRow && 'IntersectionObserver' in window && !reduceStatMotion) {
+      const statsObserver = new IntersectionObserver((entries, observer) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        startStatCounters();
+        observer.disconnect();
+      }, {
+        threshold: 0.35,
+        rootMargin: '0px 0px -10% 0px'
       });
 
-      const cards = document.querySelectorAll('.card');
+      statsObserver.observe(statsRow);
+    } else {
+      startStatCounters();
+    }
+
+    // ===== Scroll Section Timeline =====
+    const container = document.getElementById('cards');
+    if (container) {
+      const cards = container.querySelectorAll('.card');
       const fill = document.getElementById('timelineFill');
       const dots = document.querySelectorAll('.timeline-dot');
       const section = document.getElementById('scrollSection');
+      const reduceTimelineMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+      ).matches;
+      let activeCardIndex = 0;
+
+      function animateTimelineCard(index) {
+        if (!window.gsap || reduceTimelineMotion) return;
+
+        const activeCard = cards[index];
+        if (!activeCard) return;
+
+        cards.forEach((card, cardIndex) => {
+          gsap.killTweensOf(card);
+
+          if (cardIndex === index) {
+            gsap.fromTo(card, {
+              y: 18,
+              scale: 0.965,
+              rotationX: 4,
+              transformOrigin: 'center center'
+            }, {
+              y: -8,
+              scale: 1.025,
+              rotationX: 0,
+              duration: 0.68,
+              ease: 'back.out(1.7)',
+              overwrite: true
+            });
+          } else {
+            gsap.to(card, {
+              y: 0,
+              scale: 1,
+              rotationX: 0,
+              duration: 0.42,
+              ease: 'power2.out',
+              overwrite: true
+            });
+          }
+        });
+
+        const cardDetails = activeCard.querySelectorAll(
+          '.card-title, .card-desc, .card-bottom'
+        );
+        const cardIcon = activeCard.querySelector('.icon-box');
+
+        gsap.fromTo(cardDetails, {
+          y: 14,
+          autoAlpha: 0.45
+        }, {
+          y: 0,
+          autoAlpha: 1,
+          duration: 0.48,
+          stagger: 0.07,
+          ease: 'power2.out',
+          overwrite: true
+        });
+
+        if (cardIcon) {
+          gsap.fromTo(cardIcon, {
+            y: 10,
+            scale: 0.82,
+            rotation: -10
+          }, {
+            y: 0,
+            scale: 1,
+            rotation: 0,
+            duration: 0.58,
+            ease: 'back.out(2)',
+            overwrite: true
+          });
+        }
+      }
 
       function updateProgress() {
         const rect = section.getBoundingClientRect();
@@ -115,90 +283,37 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
         const activeIdx = Math.min(3, Math.floor(progress * 4));
         cards.forEach((c, i) => c.classList.toggle('active', i === activeIdx));
         dots.forEach((d, i) => d.classList.toggle('filled', progress >= i / 3 - 0.001));
+
+        if (activeIdx !== activeCardIndex) {
+          activeCardIndex = activeIdx;
+          animateTimelineCard(activeIdx);
+        }
       }
 
       window.addEventListener('scroll', updateProgress, { passive: true });
       window.addEventListener('resize', updateProgress);
       updateProgress();
+
+      if ('IntersectionObserver' in window && window.gsap && !reduceTimelineMotion) {
+        const timelineEntranceObserver = new IntersectionObserver((entries, observer) => {
+          if (!entries.some((entry) => entry.isIntersecting)) return;
+          animateTimelineCard(activeCardIndex);
+          observer.disconnect();
+        }, {
+          threshold: 0.25
+        });
+
+        timelineEntranceObserver.observe(section);
+      }
     }
 
     // ===== Featured Work Rail =====
-    const projectsData = [
-      {
-        tag: "UX Strategy · Branding",
-        stat: "9+",
-        label: "years experience",
-        name: "Strategic Design",
-        desc: "Enterprise applications and digital experiences built with purpose-driven methodology.",
-        grad: "linear-gradient(135deg, #1a2a1f, #0f1814)"
-      },
-      {
-        tag: "Frontend · Architecture",
-        stat: "50+",
-        label: "projects delivered",
-        name: "High-Performance Code",
-        desc: "Scalable frontend architectures that balance aesthetics with technical excellence.",
-        grad: "linear-gradient(135deg, #1a1f2a, #0f1218)"
-      },
-      {
-        tag: "Design Systems · UI",
-        stat: "100%",
-        label: "design-to-code fidelity",
-        name: "Design Systems",
-        desc: "Comprehensive design systems ensuring consistency across all digital touchpoints.",
-        grad: "linear-gradient(135deg, #2a1a1f, #1a0f14)"
-      },
-      {
-        tag: "Brand Identity · Collateral",
-        stat: "∞",
-        label: "scalability",
-        name: "Brand Strategy",
-        desc: "Complete brand identities from visual systems to marketing collateral.",
-        grad: "linear-gradient(135deg, #1f2a1a, #14180f)"
-      },
-      {
-        tag: "Mobile · Responsive",
-        stat: "A+",
-        label: "quality standards",
-        name: "Mobile First",
-        desc: "Mobile-first design approaches that work seamlessly across all devices.",
-        grad: "linear-gradient(135deg, #2a1f1a, #18140f)"
-      },
-      {
-        tag: "Data-Driven · Impact",
-        stat: "↑",
-        label: "conversion focus",
-        name: "Conversion Optimization",
-        desc: "User-centered experiences that drive engagement and measurable business results.",
-        grad: "linear-gradient(135deg, #1a1f2a, #0d1014)"
-      }
-    ];
-
     const rail = document.getElementById('rail');
     const counter = document.getElementById('counter');
     const trackFill = document.getElementById('trackFill');
     const railWrap = document.getElementById('railWrap');
 
     if (rail) {
-      projectsData.forEach((p, i) => {
-        const card = document.createElement('div');
-        card.className = 'rail-card';
-        card.innerHTML = `
-          <div class="rail-card-media" style="background:${p.grad}">
-            <span class="rail-card-tag">${p.tag}</span>
-            <span class="rail-card-index">0${i + 1}</span>
-            <div class="rail-card-stat"><div>${p.stat}</div><span class="rail-card-label">${p.label}</span></div>
-            <div class="rail-card-bottom">
-              <div class="rail-card-name">${p.name}</div>
-              <p class="rail-card-desc">${p.desc}</p>
-              <a class="rail-card-link" href="#">View project
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
-              </a>
-            </div>
-          </div>`;
-        rail.appendChild(card);
-      });
-
       // Drag and wheel scroll. Pointer events cover mouse, touch, and pen input.
       const dragHint = document.querySelector('.drag-hint');
       let isDown = false, startX, scrollLeft, activePointerId = null;
@@ -256,7 +371,7 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
       }, { passive: false });
 
       // Counter + progress track
-      const total = projectsData.length;
+      const total = rail.children.length;
 
       function updateCounter() {
         const maxScroll = Math.max(railWrap.scrollWidth - railWrap.clientWidth, 0);
@@ -377,7 +492,8 @@ document.querySelectorAll('[data-scroll-target]').forEach((button) => {
             autoAlpha: 0,
             x: 42,
             scale: 0.96,
-            duration: 0.9
+            duration: 0.9,
+            clearProps: 'transform'
           }, '-=0.72')
           .from('.hero-frame-footer > *', {
             autoAlpha: 0,

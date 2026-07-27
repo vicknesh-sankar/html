@@ -1,20 +1,41 @@
 /* ===== CSS Variables ===== */
 :root {
-    --bg: #121416;
+    /* Typography */
+    --font-body: "Geist", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    --font-display: "Unbounded", "Geist", system-ui, sans-serif;
+    --font-mono: "Geist Mono", monospace;
+    --font-code: var(--font-mono);
+    --font-icon: "custom-iconpack";
+
+    /* Core palette */
+    --bg-rgb: 18 20 22;
+    --bg-secondary-rgb: 31 35 38;
+    --blue-rgb: 112 156 227;
+    --indigo-rgb: 93 91 234;
+    --pink-rgb: 233 136 207;
+    --peach-rgb: 246 180 179;
+    --white-rgb: 255 255 255;
+    --black-rgb: 0 0 0;
+
+    --bg: rgb(var(--bg-rgb));
     --text: #fafafa;
     --text-secondary: #08090A;
     --text-muted: #A9AEB2;
     --text-tri: #62676B;
-    --blue: #709ce3;
-    --indigo: #5d5bea;
-    --pink: #e988cf;
-    --peach: #f6b4b3;
+    --text-soft: #d8d8dc;
+    --blue: rgb(var(--blue-rgb));
+    --indigo: rgb(var(--indigo-rgb));
+    --pink: rgb(var(--pink-rgb));
+    --peach: rgb(var(--peach-rgb));
+    --white: rgb(var(--white-rgb));
+    --black: rgb(var(--black-rgb));
     --brand-gradient: linear-gradient(135deg, var(--blue), var(--indigo), var(--pink), var(--peach));
     --brand-gradient-horizontal: linear-gradient(90deg, var(--pink), var(--indigo), var(--blue), var(--pink));
-    --bg-secondary: #1f2326;
+    --bg-secondary: rgb(var(--bg-secondary-rgb));
     --bg-tertiary: #0b0b10;
-    --border-light: rgba(255, 255, 255, 0.09);
-    --border-dark: rgba(0, 0, 0, 0.00);
+    --bg-active: #0d0d0e;
+    --border-light: rgb(var(--white-rgb) / 0.09);
+    --border-dark: transparent;
 }
 
 /* ===== Global Styles ===== */
@@ -29,13 +50,24 @@ body {
 }
 
 body {
-    font-family: 'Geist', 'Geist Mono', 'Unbounded', system-ui, -apple-system, 'Segoe UI', Arial, monospace;
+    font-family: var(--font-body);
     background: var(--bg);
     color: var(--text);
+    overflow-x: hidden;
 }
 
 a:hover {
     color: var(--indigo);
+}
+
+[data-page-parallax] {
+    transform: translate3d(
+        var(--page-parallax-x, 0px),
+        var(--page-parallax-y, 0px),
+        0
+    );
+    backface-visibility: hidden;
+    will-change: transform;
 }
 
 /* ===== Hero Section ===== */
@@ -55,8 +87,9 @@ a:hover {
 }
 
 .cta-btn i {
-    font-size: 30px;
+    font-size: 18px;
     line-height: 0;
+    transition: transform 220ms ease;
 }
 
 .b-b-line {
@@ -102,7 +135,7 @@ a:hover {
 /* Hero Typography */
 .hero-title {
     margin: 0;
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: clamp(44px, 9.5vw, 128px);
     font-weight: 800;
     line-height: 0.95;
@@ -113,7 +146,7 @@ a:hover {
 }
 
 .hero-name {
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 24px;
     font-weight: 800;
     line-height: normal;
@@ -132,7 +165,7 @@ a:hover {
 }
 
 .hero-main-tag {
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 56px;
     font-weight: 800;
     line-height: 110%;
@@ -141,7 +174,7 @@ a:hover {
 }
 
 .hero-mute-tag {
-    font-family: Geist;
+    font-family: var(--font-body);
     font-size: 20px;
     font-weight: 400;
     line-height: 160%;
@@ -149,7 +182,7 @@ a:hover {
 }
 
 .hero-tag {
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 600;
     line-height: normal;
@@ -159,7 +192,7 @@ a:hover {
 }
 
 .main-title {
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 22px;
     font-style: normal;
     font-weight: 700;
@@ -171,8 +204,8 @@ a:hover {
     border-radius: 4px;
     border: 1px solid var(--border-light);
     background: var(--bg-secondary);
-    color: #FFF;
-    font-family: Geist;
+    color: var(--white);
+    font-family: var(--font-body);
     font-size: 12px;
     font-style: normal;
     font-weight: 500;
@@ -186,17 +219,59 @@ a:hover {
 .chip-block {
     display: flex;
     gap: 8px;
+    flex-wrap: wrap;
 }
 
 .status-view {
+    --status-x: 0px;
+    --status-y: 0px;
+    --status-rotate-x: 0deg;
+    --status-rotate-y: 0deg;
+    --status-icon-x: 0px;
+    --status-icon-y: 0px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     padding: 8px 14px;
     border-radius: 20px;
-    font-family: "Geist Mono";
+    background: linear-gradient(
+        90deg,
+        rgb(var(--indigo-rgb) / 0.12),
+        rgb(var(--pink-rgb) / 0.08)
+    );
+    box-shadow:
+        0 8px 24px rgb(var(--indigo-rgb) / 0.18),
+        0 0 18px rgb(var(--pink-rgb) / 0.14);
+    font-family: var(--font-mono);
     font-size: 12px;
     font-weight: 600;
     line-height: normal;
     letter-spacing: 0.001rem;
     margin: 0px;
+    transform:
+        perspective(500px)
+        translate3d(var(--status-x), var(--status-y), 0)
+        rotateX(var(--status-rotate-x))
+        rotateY(var(--status-rotate-y));
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition:
+        color 220ms ease,
+        background 220ms ease,
+        transform 140ms ease-out,
+        box-shadow 220ms ease;
+}
+
+.status-view i {
+    color: var(--blue);
+    font-size: 15px;
+    filter: drop-shadow(0 0 6px rgb(var(--blue-rgb) / 0.65));
+    transform: translate3d(var(--status-icon-x), var(--status-icon-y), 18px);
+    will-change: transform;
+    transition:
+        color 220ms ease,
+        filter 220ms ease,
+        transform 220ms ease;
 }
 
 /* ===== Components ===== */
@@ -225,7 +300,7 @@ a:hover {
     padding: 1px;
     border-radius: inherit;
     background: var(--brand-gradient);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 }
@@ -258,8 +333,8 @@ a:hover {
             var(--peach),
             var(--blue));
     -webkit-mask:
-        linear-gradient(#000 0 0) content-box,
-        linear-gradient(#000 0 0);
+        linear-gradient(var(--black) 0 0) content-box,
+        linear-gradient(var(--black) 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     animation: spin 3s linear infinite;
@@ -269,6 +344,31 @@ a:hover {
     animation-duration: 1.2s;
 }
 
+.ai-btn:hover {
+    color: var(--text);
+    background: linear-gradient(
+        90deg,
+        rgb(var(--indigo-rgb) / 0.18),
+        rgb(var(--pink-rgb) / 0.12)
+    );
+    box-shadow:
+        0 12px 30px rgb(var(--indigo-rgb) / 0.3),
+        0 0 22px rgb(var(--pink-rgb) / 0.2);
+    transform:
+        perspective(500px)
+        translate3d(var(--status-x), calc(var(--status-y) - 3px), 0)
+        rotateX(var(--status-rotate-x))
+        rotateY(var(--status-rotate-y));
+}
+
+.ai-btn:hover i {
+    color: var(--peach);
+    filter: drop-shadow(0 0 7px rgb(var(--pink-rgb) / 0.75));
+    transform:
+        translate3d(var(--status-icon-x), var(--status-icon-y), 24px)
+        scale(1.14);
+}
+
 .cta-btn {
     position: relative;
     display: flex;
@@ -276,7 +376,7 @@ a:hover {
     align-items: center;
     gap: 8px;
     border-radius: 4px;
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 14px;
     max-height: 51px;
     overflow: hidden;
@@ -306,8 +406,7 @@ a:hover {
 
 .cta-text {
     color: var(--text);
-    font-family:
-        "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -350,7 +449,7 @@ a:hover {
 .cta-fixed {
     position: absolute;
     color: var(--text-tri);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 12px;
     font-style: normal;
     font-weight: 400;
@@ -364,7 +463,7 @@ a:hover {
 
 .hero-sub-tag {
     color: var(--text);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 28px;
     font-style: normal;
     font-weight: 600;
@@ -373,7 +472,7 @@ a:hover {
 
 .sub-title {
     color: var(--text-tri);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 15px;
     font-style: normal;
     font-weight: 700;
@@ -396,7 +495,7 @@ a:hover {
 
 .stat-number {
     font-size: 3.5rem;
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-style: normal;
     font-weight: 800;
     line-height: normal;
@@ -430,8 +529,7 @@ a:hover {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    font-family:
-        "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 13px;
     font-style: normal;
     font-weight: 600;
@@ -455,7 +553,7 @@ a:hover {
 
 .stat-label {
     color: var(--text-muted);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 13px;
     font-style: normal;
     font-weight: 600;
@@ -464,7 +562,7 @@ a:hover {
 
 .sec-text-main {
     color: var(--text);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 40px;
     font-style: normal;
     font-weight: 700;
@@ -480,7 +578,7 @@ a:hover {
     align-items: center;
     justify-content: center;
     color: var(--text-tri);
-    font-family: "Courier New", monospace;
+    font-family: var(--font-code);
     font-size: 13px;
     letter-spacing: 2px;
     text-transform: capitalize;
@@ -522,7 +620,7 @@ a:hover {
     height: 2px;
     width: 0%;
     background: var(--brand-gradient);
-    box-shadow: 0 0 8px rgba(112, 156, 227, 0.6);
+    box-shadow: 0 0 8px rgb(var(--blue-rgb) / 0.6);
 }
 
 .timeline-dot {
@@ -532,7 +630,7 @@ a:hover {
     width: 9px;
     height: 9px;
     border-radius: 50%;
-    background: #000;
+    background: var(--black);
     border: 1.5px solid var(--text-tri);
     transition: border-color 0.3s ease;
 }
@@ -545,11 +643,14 @@ a:hover {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 18px;
+    perspective: 1000px;
 }
 
 .card {
     position: relative;
     min-height: 420px;
+    transform-style: preserve-3d;
+    will-change: transform;
 }
 
 .card-svg {
@@ -566,7 +667,7 @@ a:hover {
 }
 
 .card.active .card-svg path.bg {
-    fill: #0d0d0e;
+    fill: var(--bg-active);
 }
 
 .card-svg path.crisp {
@@ -611,7 +712,7 @@ a:hover {
 }
 
 .card.active .icon-box {
-    border-color: #f6b4b378;
+    border-color: rgb(var(--peach-rgb) / 0.47);
     color: var(--pink);
 }
 
@@ -623,7 +724,7 @@ a:hover {
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.6px;
-    font-family: 'Unbounded';
+    font-family: var(--font-display);
     text-transform: capitalize;
     color: var(--text-muted);
     margin: 14px 0 10px;
@@ -638,7 +739,7 @@ a:hover {
     font-size: 14px;
     line-height: 1.55;
     color: var(--text-tri);
-    font-family: 'Geist';
+    font-family: var(--font-body);
     margin: 0;
     flex: 1;
     transition: color 0.4s ease;
@@ -661,7 +762,7 @@ a:hover {
 }
 
 .card-phase {
-    font-family: "Courier New", monospace;
+    font-family: var(--font-code);
     font-size: 11px;
     letter-spacing: 1.5px;
     color: var(--text-tri);
@@ -693,14 +794,14 @@ a:hover {
 
 .list-title {
     color: var(--text);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 16px;
     font-style: normal;
     width: 240px;
 }
 
 .list-text {
-    font-family: Geist;
+    font-family: var(--font-body);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -708,7 +809,7 @@ a:hover {
 }
 
 .sec-sub-main {
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
@@ -716,11 +817,10 @@ a:hover {
 
 .sec-text-muted {
     color: var(--text-muted);
-    font-family: Geist;
+    font-family: var(--font-body);
     font-size: 16px;
     font-style: normal;
     font-weight: 400;
-    color: var(--text-muted);
 }
 
 /* ===== Rail / Work Items ===== */
@@ -748,7 +848,7 @@ a:hover {
 
 .rail-headline {
     font-size: clamp(34px, 5.5vw, 64px);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-weight: 800;
     line-height: 1.02;
     letter-spacing: -1.5px;
@@ -858,7 +958,7 @@ a:hover {
     content: "";
     position: absolute;
     inset: 0;
-    background: linear-gradient(to top, rgba(18, 20, 22, 0.85) 0%, rgba(18, 20, 22, 0.15) 45%, transparent 65%);
+    background: linear-gradient(to top, rgb(var(--bg-rgb) / 0.85) 0%, rgb(var(--bg-rgb) / 0.15) 45%, transparent 65%);
     pointer-events: none;
 }
 
@@ -870,12 +970,12 @@ a:hover {
     font-size: 11px;
     letter-spacing: 1px;
     text-transform: capitalize;
-    color: #d8d8dc;
-    background: rgba(0, 0, 0, 0.4);
+    color: var(--text-soft);
+    background: rgb(var(--black-rgb) / 0.4);
     backdrop-filter: blur(6px);
     padding: 6px 12px;
     border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
+    border: 1px solid rgb(var(--white-rgb) / 0.12);
 }
 
 .rail-card-index {
@@ -883,9 +983,9 @@ a:hover {
     top: 18px;
     right: 20px;
     z-index: 2;
-    font-family: "Courier New", monospace;
+    font-family: var(--font-code);
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.5);
+    color: rgb(var(--white-rgb) / 0.5);
 }
 
 .rail-card-stat {
@@ -965,7 +1065,7 @@ a:hover {
     display: flex;
     align-items: center;
     gap: 16px;
-    font-family: "Courier New", monospace;
+    font-family: var(--font-code);
     font-size: 13px;
     color: var(--text-tri);
 }
@@ -998,7 +1098,7 @@ a:hover {
     display: inline-block;
     width: 120px;
     height: 100%;
-    background: linear-gradient(90deg, #00000000, #121416);
+    background: linear-gradient(90deg, transparent, var(--bg));
     left: 108vw;
     position: absolute;
     z-index: 2;
@@ -1023,8 +1123,8 @@ a:hover {
     width: 1px;
     background: linear-gradient(180deg,
             transparent,
-            rgba(112, 156, 227, 0.55) 8%,
-            rgba(233, 136, 207, 0.5) 92%,
+            rgb(var(--blue-rgb) / 0.55) 8%,
+            rgb(var(--pink-rgb) / 0.5) 92%,
             transparent);
 }
 
@@ -1067,7 +1167,7 @@ a:hover {
 .lanch-step {
     margin-bottom: 10px;
     color: var(--text-tri);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.12em;
@@ -1075,7 +1175,7 @@ a:hover {
 
 .lanch-title {
     color: var(--text);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: clamp(18px, 2.2vw, 28px);
     font-weight: 650;
     line-height: 1.25;
@@ -1089,7 +1189,7 @@ a:hover {
     margin-top: 0;
     overflow: hidden;
     color: var(--text-muted);
-    font-family: "Geist";
+    font-family: var(--font-body);
     font-size: 15px;
     line-height: 1.7;
     opacity: 0;
@@ -1135,7 +1235,7 @@ a:hover {
 
 .lanch-row:hover .lanch-img {
     color: var(--peach);
-    border-color: rgba(246, 180, 179, 0.55);
+    border-color: rgb(var(--peach-rgb) / 0.55);
 }
 
 .lanch-toggle:focus-visible+.lanch-row {
@@ -1168,11 +1268,11 @@ a:hover {
     transform: scale(1.08);
     box-shadow:
         0 0 0 8px var(--bg),
-        0 0 32px rgba(112, 156, 227, 0.2);
+        0 0 32px rgb(var(--blue-rgb) / 0.2);
 }
 
 .capability-name {
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
@@ -1228,7 +1328,7 @@ a:hover {
     padding: 1px;
     border-radius: inherit;
     background: var(--brand-gradient);
-    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask: linear-gradient(var(--black) 0 0) content-box, linear-gradient(var(--black) 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
 }
@@ -1242,8 +1342,8 @@ a:hover {
 }
 
 .core-service-title {
-    color: #FFF;
-    font-family: Unbounded;
+    color: var(--white);
+    font-family: var(--font-display);
     font-size: 16px;
     font-style: normal;
     font-weight: 700;
@@ -1292,7 +1392,7 @@ a:hover {
 
 .core-service-description {
     color: var(--text-muted);
-    font-family: Geist;
+    font-family: var(--font-body);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -1327,7 +1427,7 @@ a:hover {
     .lanch-toggle:checked+.lanch-row .lanch-img {
         box-shadow:
             0 0 0 6px var(--bg),
-            0 0 24px rgba(112, 156, 227, 0.18);
+            0 0 24px rgb(var(--blue-rgb) / 0.18);
     }
 }
 
@@ -1340,9 +1440,23 @@ a:hover {
 
     .lanch-title,
     .lanch-desc,
-    .lanch-img {
+    .lanch-img,
+    .ai-btn,
+    .ai-btn i,
+    .ai-btn::before {
         animation: none !important;
         transition: none;
+    }
+
+    .ai-btn,
+    .ai-btn:hover,
+    .ai-btn i,
+    .ai-btn:hover i {
+        transform: none;
+    }
+
+    [data-page-parallax] {
+        transform: none !important;
     }
 }
 
@@ -1369,7 +1483,7 @@ a:hover {
     overflow: hidden;
     border: 1px solid var(--border-light);
     border-radius: 5px;
-    background: rgba(31, 35, 38, 0.52);
+    background: rgb(var(--bg-secondary-rgb) / 0.52);
     transition:
         border-color 220ms ease,
         background 220ms ease;
@@ -1377,8 +1491,8 @@ a:hover {
 
 .faq-accordion .accordion-item:hover,
 .faq-accordion .accordion-item:has(.accordion-button:not(.collapsed)) {
-    border-color: rgba(112, 156, 227, 0.3);
-    background: rgba(31, 35, 38, 0.76);
+    border-color: rgb(var(--blue-rgb) / 0.3);
+    background: rgb(var(--bg-secondary-rgb) / 0.76);
 }
 
 .faq-accordion .accordion-button {
@@ -1388,7 +1502,7 @@ a:hover {
     box-shadow: none;
     color: var(--text);
     background: transparent;
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 18px;
     font-weight: 700;
     line-height: 1.35;
@@ -1404,7 +1518,7 @@ a:hover {
 }
 
 .faq-accordion .accordion-button::after {
-    content: "\f078";
+    content: "\e905";
     display: grid;
     flex: 0 0 24px;
     place-items: center;
@@ -1413,7 +1527,7 @@ a:hover {
     margin-left: auto;
     background: none;
     color: var(--indigo);
-    font-family: "Font Awesome 7 Free";
+    font-family: var(--font-icon);
     font-weight: 900;
     font-size: 18px;
     line-height: 1;
@@ -1434,30 +1548,14 @@ a:hover {
         clamp(24px, 3vw, 38px)
         clamp(24px, 3vw, 38px);
     color: var(--text-muted);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: clamp(13px, 1.2vw, 17px);
     line-height: 1.7;
 }
 
-@media (max-width: 560px) {
-    .faq-accordion {
-        gap: 16px;
-        margin-top: 32px;
-    }
-
-    .faq-accordion .accordion-button {
-        gap: 14px;
-        padding: 22px 18px;
-    }
-
-    .faq-accordion .accordion-body {
-        padding: 0 18px 22px;
-    }
-}
-
 /* ===== Footer ===== */
 .footer-block {
-    background: #08090a;
+    background: var(--text-secondary);
 }
 
 .footer-block .view-frame {
@@ -1478,13 +1576,13 @@ a:hover {
     border: 1px solid transparent;
     border-radius: 12px;
     background:
-        linear-gradient(rgba(18, 20, 22, 0.96), rgba(18, 20, 22, 0.96)) padding-box,
+        linear-gradient(rgb(var(--bg-rgb) / 0.96), rgb(var(--bg-rgb) / 0.96)) padding-box,
         var(--brand-gradient-horizontal) border-box;
     box-shadow:
-        inset 0 0 18px rgba(93, 91, 234, 0.32),
-        inset 0 0 30px rgba(233, 136, 207, 0.12),
-        0 0 22px rgba(93, 91, 234, 0.18),
-        0 0 38px rgba(233, 136, 207, 0.1);
+        inset 0 0 18px rgb(var(--indigo-rgb) / 0.32),
+        inset 0 0 30px rgb(var(--pink-rgb) / 0.12),
+        0 0 22px rgb(var(--indigo-rgb) / 0.18),
+        0 0 38px rgb(var(--pink-rgb) / 0.1);
     text-align: center;
 }
 
@@ -1494,8 +1592,8 @@ a:hover {
     inset: 0;
     pointer-events: none;
     background:
-        linear-gradient(90deg, rgba(93, 91, 234, 0.16), transparent 5%, transparent 95%, rgba(233, 136, 207, 0.16)),
-        linear-gradient(180deg, rgba(112, 156, 227, 0.12), transparent 7%, transparent 93%, rgba(246, 180, 179, 0.1));
+        linear-gradient(90deg, rgb(var(--indigo-rgb) / 0.16), transparent 5%, transparent 95%, rgb(var(--pink-rgb) / 0.16)),
+        linear-gradient(180deg, rgb(var(--blue-rgb) / 0.12), transparent 7%, transparent 93%, rgb(var(--peach-rgb) / 0.1));
 }
 
 .footer-cta-title {
@@ -1503,7 +1601,7 @@ a:hover {
     max-width: 900px;
     margin: 0;
     color: var(--text);
-    font-family: Unbounded;
+    font-family: var(--font-display);
     font-size: 36px;
     font-weight: 750;
     line-height: 1.08;
@@ -1515,7 +1613,7 @@ a:hover {
     max-width: 760px;
     margin: 28px 0 0;
     color: var(--text-muted);
-    font-family: "Geist";
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.45;
 }
@@ -1548,8 +1646,8 @@ a:hover {
     background: var(--brand-gradient-horizontal);
     background-size: 200% 100%;
     box-shadow:
-        0 14px 36px rgba(93, 91, 234, 0.3),
-        0 0 22px rgba(233, 136, 207, 0.2);
+        0 14px 36px rgb(var(--indigo-rgb) / 0.3),
+        0 0 22px rgb(var(--pink-rgb) / 0.2);
     animation: gradient-shift 3s ease infinite;
 }
 
@@ -1560,8 +1658,8 @@ a:hover {
         linear-gradient(var(--bg-secondary), var(--bg-secondary)) padding-box,
         var(--brand-gradient-horizontal) border-box;
     box-shadow:
-        0 12px 30px rgba(93, 91, 234, 0.16),
-        0 0 18px rgba(233, 136, 207, 0.12);
+        0 12px 30px rgb(var(--indigo-rgb) / 0.16),
+        0 0 18px rgb(var(--pink-rgb) / 0.12);
 }
 
 .cta-btn::after {
@@ -1576,7 +1674,7 @@ a:hover {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(255, 255, 255, 0.24),
+        rgb(var(--white-rgb) / 0.24),
         transparent
     );
     transform: skewX(-18deg);
@@ -1589,10 +1687,6 @@ a:hover {
 
 .cta-btn:hover::after {
     left: 135%;
-}
-
-.cta-btn i {
-    transition: transform 220ms ease;
 }
 
 .cta-btn:hover i {
@@ -1619,7 +1713,7 @@ a:hover {
     max-width: 350px;
     margin: 0;
     color: var(--text-tri);
-    font-family: "Geist";
+    font-family: var(--font-body);
     font-size: 16px;
     line-height: 1.5;
 }
@@ -1627,7 +1721,7 @@ a:hover {
 .footer-column-title {
     margin: 0 0 20px;
     color: var(--indigo);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 13px;
     font-weight: 600;
     letter-spacing: 0.04em;
@@ -1644,23 +1738,18 @@ a:hover {
 .footer-contact a,
 .footer-contact address,
 .footer-network a {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     margin: 0;
     color: var(--text);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 14px;
     font-style: normal;
     line-height: 1.4;
     text-decoration: none;
     overflow-wrap: anywhere;
     transition: color 180ms ease;
-}
-
-.footer-contact a,
-.footer-contact address,
-.footer-network a {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
 }
 
 .footer-contact i,
@@ -1692,7 +1781,7 @@ a:hover {
 .footer-bottom p {
     margin: 0;
     color: var(--text-tri);
-    font-family: "Geist Mono";
+    font-family: var(--font-mono);
     font-size: 12px;
     line-height: 1.5;
 }
@@ -1707,7 +1796,306 @@ a:hover {
     }
 }
 
+/* ===== Animations ===== */
+@property --angle {
+    syntax: '<angle>';
+    initial-value: 0deg;
+    inherits: false;
+}
+
+@keyframes spin {
+    to {
+        --angle: 360deg;
+    }
+}
+
+
+/* ===== Responsive Layout ===== */
+@media (max-width: 1000px) {
+    .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .hero {
+        min-height: auto;
+        padding: 40px 5vw 56px;
+    }
+
+    .hero-inner {
+        width: 100%;
+        height: auto;
+        gap: 32px;
+    }
+
+    .hero-frame-body {
+        align-items: flex-start;
+    }
+
+    .hero-main-tag {
+        font-size: clamp(36px, 5.8vw, 56px);
+    }
+
+    .hero-img-block {
+        min-width: 32vw;
+    }
+
+    .hero-img {
+        width: min(100%, 320px);
+        height: auto;
+    }
+
+    .stats-row {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 16px;
+    }
+
+    .stat-card {
+        width: 100%;
+    }
+
+    .scroll-section {
+        height: auto;
+    }
+
+    .sticky-inner {
+        position: static;
+        padding: 24px 0 48px;
+    }
+
+    .capability-name {
+        width: auto;
+        overflow-wrap: anywhere;
+    }
+}
+
+@media (max-width: 720px) {
+    .container-fluid {
+        padding-right: 20px;
+        padding-left: 20px;
+    }
+
+    .hero {
+        padding: 24px 0 40px;
+    }
+
+    .hero-name {
+        font-size: clamp(17px, 5vw, 22px);
+    }
+
+    .hero-title {
+        font-size: clamp(32px, 10.5vw, 56px);
+        line-height: 1;
+    }
+
+    .hero-frame-header {
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .status-view {
+        font-size: 10px;
+    }
+
+    .hero-frame-body {
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .hero-txt-block {
+        width: 100%;
+    }
+
+    .hero-main-tag {
+        margin: 0;
+        font-size: clamp(30px, 9vw, 44px);
+        line-height: 1.12;
+        overflow-wrap: anywhere;
+    }
+
+    .hero-mute-tag {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.55;
+    }
+
+    .hero-img-block {
+        order: -1;
+        width: 100%;
+        min-width: 0;
+    }
+
+    .hero-img {
+        width: min(72vw, 280px);
+    }
+
+    .hero-cta-blk {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .hero-cta-blk .cta-btn {
+        width: 100%;
+        max-height: none;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .hero-frame-footer {
+        padding: 18px;
+        flex-direction: column;
+        align-items: center;
+        gap: 14px;
+        text-align: center;
+    }
+
+    .hero-frame-footer .cta-text {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .cta-fixed {
+        position: static;
+    }
+
+    .view-frame {
+        padding: 56px 0;
+    }
+
+    .hero-sub-tag {
+        font-size: clamp(20px, 6vw, 26px);
+    }
+
+    .sec-text-main {
+        font-size: clamp(27px, 8vw, 36px);
+        overflow-wrap: anywhere;
+    }
+
+    .sec-sub-main {
+        font-size: 20px;
+        line-height: 1.35;
+    }
+
+    .stats-row {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        padding: 24px;
+    }
+
+    .stat-number {
+        font-size: 2.75rem;
+    }
+
+    .sticky-inner {
+        gap: 16px;
+    }
+
+    .timeline {
+        margin: 16px 4px 32px;
+    }
+
+    .list-block {
+        gap: 8px;
+        padding: 18px;
+    }
+
+    .list-title {
+        width: 100%;
+        line-height: 1.4;
+    }
+
+    .list-text {
+        line-height: 1.55;
+    }
+
+    .rail-head {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rail-headline {
+        font-size: clamp(28px, 7vw, 48px);
+    }
+
+    .rail-wrap {
+        margin: 32px -20px 24px;
+        padding: 0 20px;
+        scroll-padding-inline: 20px;
+    }
+
+    .rail-card {
+        width: min(82vw, 320px);
+        height: 400px;
+    }
+
+    .rail-card-stat {
+        bottom: 148px;
+        font-size: 32px;
+    }
+
+    .rail-footer {
+        padding-right: 0;
+        padding-left: 0;
+    }
+
+    .capability-card,
+    .capability-card-wide {
+        width: 100%;
+    }
+
+    .lanch-toggle:checked + .lanch-row .lanch-desc {
+        max-height: 360px;
+    }
+
+    .capability-card {
+        padding: 18px;
+    }
+
+    .capability-name {
+        font-size: 16px;
+        line-height: 1.35;
+    }
+
+    .core-service-card {
+        padding: 18px;
+    }
+
+    .faq-accordion .accordion-button {
+        font-size: 15px;
+        line-height: 1.45;
+    }
+
+    .footer-cta-title {
+        font-size: clamp(24px, 7vw, 30px);
+    }
+}
+
 @media (max-width: 560px) {
+    .cards {
+        grid-template-columns: 1fr;
+    }
+
+    .card {
+        min-height: 300px;
+    }
+
+    .faq-accordion {
+        gap: 16px;
+        margin-top: 32px;
+    }
+
+    .faq-accordion .accordion-button {
+        gap: 14px;
+        padding: 22px 18px;
+    }
+
+    .faq-accordion .accordion-body {
+        padding: 0 18px 22px;
+    }
+
     .footer-block .view-frame {
         padding-top: 48px;
     }
@@ -1722,12 +2110,14 @@ a:hover {
         display: none;
     }
 
-    .footer-cta-actions {
+    .footer-cta-actions,
+    .footer-cta-actions a {
         width: 100%;
     }
 
-    .footer-cta-actions a {
-        width: 100%;
+    .footer-cta-actions .cta-btn {
+        justify-content: center;
+        text-align: center;
     }
 
     .footer-details {
@@ -1746,77 +2136,76 @@ a:hover {
     }
 }
 
-/* ===== Animations ===== */
-@property --angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
-
-@keyframes spin {
-    to {
-        --angle: 360deg;
+@media (max-width: 420px) {
+    .container-fluid {
+        padding-right: 16px;
+        padding-left: 16px;
     }
-}
 
-
-/* ===== Media Queries ===== */
-@media (max-width: 1000px) {
-    .cards {
-        grid-template-columns: repeat(2, 1fr);
+    .hero-frame-header {
+        flex-direction: column;
     }
-}
 
-@media (max-width: 560px) {
+    .hero-tag {
+        max-width: 100%;
+        line-height: 1.45;
+    }
+
+    .cta-text {
+        max-width: 100%;
+        font-size: 12px;
+        overflow-wrap: anywhere;
+    }
+
     .cards {
-        grid-template-columns: 1fr;
+        gap: 14px;
     }
 
     .card {
-        min-height: 300px;
-    }
-}
-
-@media (max-width: 720px) {
-    .hero {
-        padding: 8vh 6vw;
-    }
-
-    .hero-title {
-        font-size: clamp(32px, 10.5vw, 56px);
-        line-height: 1;
-    }
-
-    .hero-name {
-        font-size: clamp(18px, 4.5vw, 28px);
-    }
-
-    .rail-head {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .rail-headline {
-        font-size: clamp(28px, 7vw, 48px);
+        min-height: 330px;
     }
 
     .rail-wrap {
-        margin: 32px -6vw 24px -6vw;
-        padding: 0 6vw;
+        margin-right: -16px;
+        margin-left: -16px;
+        padding-right: 16px;
+        padding-left: 16px;
+        scroll-padding-inline: 16px;
     }
 
     .rail-card {
-        width: 300px;
-        height: 380px;
+        width: calc(100vw - 48px);
     }
 
-    .rail-card-stat {
-        font-size: 32px;
-        bottom: 72px;
+    .lanch-row {
+        grid-template-columns: minmax(0, 1fr) 52px;
     }
 
-    .rail-footer {
-        padding-left: 0;
-        padding-right: 0;
+    .lanch-block::after {
+        right: 25px;
+    }
+
+    .lanch-copy {
+        padding-right: 12px;
+    }
+
+    .lanch-img {
+        width: 40px;
+        height: 40px;
+        margin-right: 6px;
+    }
+
+    .core-service-card {
+        flex-direction: column;
+    }
+
+    .footer-cta {
+        min-height: 0;
+        padding: 48px 18px;
+    }
+
+    .footer-cta-actions {
+        gap: 12px;
+        margin-top: 32px;
     }
 }
